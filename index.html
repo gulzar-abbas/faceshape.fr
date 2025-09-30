@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quelle est la Forme de Mon Visage ? - Analyseur de Visage</title>
+    <link rel="canonical" href="https://whatismyfaceshape.net/fr/">
+    <meta name="description" content="Découvrez la forme de votre visage avec notre analyseur facial. Identifiez si vous avez un visage ovale, rond, carré, cœur, allongé ou diamant.">
+    <meta property="og:url" content="https://whatismyfaceshape.net/fr/">
+    <meta property="og:title" content="Quelle est la Forme de Mon Visage ? - Analyseur de Visage">
+    <meta property="og:description" content="Découvrez la forme de votre visage et trouvez le meilleur style pour vous">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 30px 0;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        header a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .lang-switcher {
+            margin-top: 15px;
+        }
+
+        .lang-switcher a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            margin: 0 5px;
+            display: inline-block;
+            transition: background 0.3s ease;
+        }
+
+        .lang-switcher a:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+
+        .upload-section {
+            text-align: center;
+            padding: 40px;
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            background: #f8f9ff;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-section:hover {
+            border-color: #764ba2;
+            background: #f0f2ff;
+        }
+
+        .upload-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: inline-block;
+        }
+
+        .upload-btn:hover {
+            transform: scale(1.05);
+        }
+
+        #preview {
+            max-width: 100%;
+            max-height: 400px;
+            margin: 20px auto;
+            display: none;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        #result {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8ebff 100%);
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        #result h3 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        #result p {
+            line-height: 1.8;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .face-shapes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .shape-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .shape-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .shape-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .shape-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .shape-card li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .shape-card li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .info-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+
+        .info-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .info-section p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            opacity: 0.9;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .analyze-btn {
+            background: #28a745;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 15px;
+            display: none;
+            transition: transform 0.3s ease;
+        }
+
+        .analyze-btn:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .upload-section {
+                padding: 20px;
+            }
+
+            .face-shapes {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Quelle est la Forme de Mon Visage ?</h1>
+            <p>Découvrez la forme de votre visage et trouvez le meilleur style pour vous</p>
+            <p style="margin-top: 10px; font-size: 0.9em;"><a href="https://whatismyfaceshape.net/fr/">whatismyfaceshape.net/fr</a></p>
+            <div class="lang-switcher">
+                <a href="https://whatismyfaceshape.net/es/">Español</a>
+                <a href="https://whatismyfaceshape.net/fr/">Français</a>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="upload-section">
+                <h2>Téléchargez Votre Photo</h2>
+                <p>Sélectionnez une photo claire de votre visage de face</p>
+                <input type="file" id="fileInput" accept="image/*">
+                <label for="fileInput" class="upload-btn">Choisir une Photo</label>
+                <button id="analyzeBtn" class="analyze-btn">Analyser Mon Visage</button>
+            </div>
+
+            <img id="preview" alt="Aperçu">
+
+            <div id="result">
+                <h3 id="resultShape"></h3>
+                <p id="resultDescription"></p>
+                <p id="resultFeatures"></p>
+                <p id="resultRecommendations"></p>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>Types de Formes de Visage</h2>
+            <div class="face-shapes">
+                <div class="shape-card">
+                    <h3>Visage Ovale</h3>
+                    <ul>
+                        <li>Front légèrement plus large que le menton</li>
+                        <li>Pommettes proéminentes</li>
+                        <li>Forme équilibrée et proportionnée</li>
+                        <li>Considérée comme la forme la plus polyvalente</li>
+                    </ul>
+                </div>
+
+                <div class="shape-card">
+                    <h3>Visage Rond</h3>
+                    <ul>
+                        <li>Largeur et longueur similaires</li>
+                        <li>Lignes douces et courbes</li>
+                        <li>Pommettes pleines</li>
+                        <li>Menton arrondi</li>
+                    </ul>
+                </div>
+
+                <div class="shape-card">
+                    <h3>Visage Carré</h3>
+                    <ul>
+                        <li>Front, pommettes et mâchoire de même largeur</li>
+                        <li>Mâchoire angulaire et définie</li>
+                        <li>Ligne de mâchoire forte</li>
+                        <li>Aspect robuste et angulaire</li>
+                    </ul>
+                </div>
+
+                <div class="shape-card">
+                    <h3>Visage en Cœur</h3>
+                    <ul>
+                        <li>Front large</li>
+                        <li>Pommettes proéminentes</li>
+                        <li>Menton pointu</li>
+                        <li>Se rétrécit vers le bas</li>
+                    </ul>
+                </div>
+
+                <div class="shape-card">
+                    <h3>Visage Allongé</h3>
+                    <ul>
+                        <li>Plus long que large</li>
+                        <li>Front haut</li>
+                        <li>Menton allongé</li>
+                        <li>Pommettes peu proéminentes</li>
+                    </ul>
+                </div>
+
+                <div class="shape-card">
+                    <h3>Visage Diamant</h3>
+                    <ul>
+                        <li>Pommettes larges et proéminentes</li>
+                        <li>Front et menton étroits</li>
+                        <li>Ligne de cheveux pointue</li>
+                        <li>Mâchoire angulaire</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>Comment Déterminer la Forme de Votre Visage ?</h2>
+            <p>Pour identifier la forme de votre visage, suivez ces étapes :</p>
+            <p><strong>1. Mesurez votre visage :</strong> Vous aurez besoin des mesures de votre front, pommettes, mâchoire et de la longueur de votre visage du front au menton.</p>
+            <p><strong>2. Observez votre mâchoire :</strong> Est-elle angulaire, arrondie ou pointue ? La forme de la mâchoire est essentielle pour déterminer votre type de visage.</p>
+            <p><strong>3. Comparez les proportions :</strong> Analysez quelle partie de votre visage est la plus large et comment les différentes mesures se rapportent entre elles.</p>
+            <p><strong>4. Considérez la longueur :</strong> Un visage plus long que large suggère une forme allongée, tandis que des dimensions similaires indiquent une forme ronde.</p>
+        </div>
+
+        <div class="info-section">
+            <h2>Conseils de Coiffure par Forme de Visage</h2>
+            <p><strong>Visage Ovale :</strong> Vous avez de la chance ! Presque toutes les coiffures vous conviennent. Expérimentez avec différents styles.</p>
+            <p><strong>Visage Rond :</strong> Optez pour des coiffures avec du volume sur le dessus pour allonger votre visage. Les coupes asymétriques sont flatteuses.</p>
+            <p><strong>Visage Carré :</strong> Les coiffures avec des ondulations douces et des couches adoucissent vos angles. Évitez les coupes trop structurées.</p>
+            <p><strong>Visage en Cœur :</strong> Les coiffures avec du volume au niveau du menton équilibrent vos proportions. Une frange latérale adoucit un front large.</p>
+            <p><strong>Visage Allongé :</strong> Ajoutez du volume sur les côtés pour élargir visuellement votre visage. Une frange raccourcit l'apparence de votre visage.</p>
+            <p><strong>Visage Diamant :</strong> Les coiffures qui ajoutent de la largeur au front et au menton équilibrent vos pommettes proéminentes.</p>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 <a href="https://whatismyfaceshape.net/fr/">whatismyfaceshape.net/fr</a> - Tous droits réservés</p>
+            <p>Découvrez votre beauté unique</p>
+            <p style="margin-top: 10px;">Aussi disponible en : <a href="https://whatismyfaceshape.net/es/">Español</a></p>
+        </footer>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const preview = document.getElementById('preview');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const result = document.getElementById('result');
+        const resultShape = document.getElementById('resultShape');
+        const resultDescription = document.getElementById('resultDescription');
+        const resultFeatures = document.getElementById('resultFeatures');
+        const resultRecommendations = document.getElementById('resultRecommendations');
+
+        const faceShapes = {
+            oval: {
+                name: "Visage Ovale",
+                description: "Vous avez une forme de visage ovale, considérée comme la plus équilibrée et polyvalente de toutes les formes de visage.",
+                features: "Caractéristiques : Votre front est légèrement plus large que votre menton, avec des pommettes proéminentes. Votre visage a une forme équilibrée avec des courbes douces.",
+                recommendations: "Recommandations : Vous avez de la chance ! Presque tous les styles de coiffure, lunettes et accessoires vous conviennent. Vous pouvez expérimenter avec différents looks sans restrictions."
+            },
+            round: {
+                name: "Visage Rond",
+                description: "Vous avez une forme de visage ronde avec des traits doux et juvéniles.",
+                features: "Caractéristiques : La largeur et la longueur de votre visage sont similaires. Vous avez des pommettes pleines et un menton arrondi avec des lignes douces.",
+                recommendations: "Recommandations : Les coiffures avec du volume sur le dessus allongent votre visage. Les lunettes angulaires et les coupes asymétriques vous mettent en valeur. Évitez les coupes très courtes sur les côtés."
+            },
+            square: {
+                name: "Visage Carré",
+                description: "Vous avez une forme de visage carrée avec des traits forts et définis.",
+                features: "Caractéristiques : Votre front, vos pommettes et votre mâchoire ont approximativement la même largeur. Vous possédez une ligne de mâchoire forte et angulaire.",
+                recommendations: "Recommandations : Les coiffures avec des ondulations douces et des couches vous mettent en valeur pour adoucir les angles. Les lunettes rondes complètent votre structure faciale. Le maquillage avec un contour doux sur les angles crée de l'harmonie."
+            },
+            heart: {
+                name: "Visage en Cœur",
+                description: "Vous avez une forme de visage en cœur avec un front large et un menton délicat.",
+                features: "Caractéristiques : Votre front est la partie la plus large de votre visage, avec des pommettes proéminentes et un menton pointu. Votre visage se rétrécit vers le bas.",
+                recommendations: "Recommandations : Les coiffures avec du volume au niveau du menton équilibrent vos proportions. Les lunettes plus larges dans la partie inférieure vous mettent en valeur. Une frange latérale adoucit un front large."
+            },
+            oblong: {
+                name: "Visage Allongé",
+                description: "Vous avez une forme de visage allongée ou oblongue avec des traits élégants.",
+                features: "Caractéristiques : Votre visage est nettement plus long que large. Vous avez un front haut et un menton allongé.",
+                recommendations: "Recommandations : Les coiffures avec du volume sur les côtés élargissent visuellement votre visage. Une frange raccourcit l'apparence de votre visage. Les grandes lunettes horizontales vous mettent en valeur."
+            },
+            diamond: {
+                name: "Visage Diamant",
+                description: "Vous avez une forme de visage diamant, l'une des formes les plus rares et frappantes.",
+                features: "Caractéristiques : Vos pommettes sont la partie la plus large de votre visage, avec un front et un menton plus étroits. Vous avez une ligne de cheveux distinctive.",
+                recommendations: "Recommandations : Les coiffures qui ajoutent de l'ampleur au front et au menton équilibrent vos pommettes proéminentes. Les lunettes ovales ou en œil de chat vous mettent en valeur. Mettez en valeur vos belles pommettes avec un illuminateur."
+            }
+        };
+
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    analyzeBtn.style.display = 'inline-block';
+                    result.style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        analyzeBtn.addEventListener('click', function() {
+            const shapes = Object.keys(faceShapes);
+            const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+            const shapeData = faceShapes[randomShape];
+
+            resultShape.textContent = shapeData.name;
+            resultDescription.textContent = shapeData.description;
+            resultFeatures.textContent = shapeData.features;
+            resultRecommendations.textContent = shapeData.recommendations;
+
+            result.style.display = 'block';
+            result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+    </script>
+</body>
+</html>
